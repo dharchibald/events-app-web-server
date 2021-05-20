@@ -1,0 +1,124 @@
+<div id="event-form-container" style="margin-bottom: 20px;">
+    <div>
+        <h2 id="form-banner">Add an event</h2>
+    </div>
+    <form action="/event" method="post">
+        <div>
+            <div>
+                <label for="event-title">Title:</label>
+            </div>
+            <div>
+                <input id="event-title" name="title" type="text" placeholder="Event Title"/>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="event-description">Description:</label>
+            </div>
+            <div>
+                <input id="event-description" name="description" type="text" placeholder="Event Description"/>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="event-location">Location:</label>
+            </div>
+            <div>
+                <input id="event-location" name="location" type="text" placeholder="Event Location"/>
+            </div>
+        </div>
+        <div class="input-group.date">
+            <div>
+                <label for="event-date">Event Date:</label>
+            </div>
+            <div>
+                <input id="event-date" name="date" type="text" placeholder="Event Date"/>
+            </div>
+        </div>
+        <div>
+            <button class="form-cancel-button">Cancel</button>
+            <input type="reset" value="Reset" />
+            <input class="form-submit-button" type="submit"  value="Submit" />
+            <input type="hidden" name="id" id="event-id" value="" />
+            <input type="hidden" name="type" id="event-type" value="add" />
+        </div>
+    </form>
+</div>
+<div id="delete_message">
+    <h2 class="delete-question">Are You Sure You Want To Delete This ID: </h2>
+    <input type="button" value="Delete" id="delete" class="delete-button-yes">
+    <input type="button" value="Cancel" id="cancel">
+</div>
+<div>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Description</th>
+            <th scope="col">Location</th>
+            <th scope="col">Date</th>
+            <th scope="col">Likes</th>
+            <th scope="col">DisLikes</th>
+            <th scope="col">Controls <button class="add-button">Add Event</button></th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#events}}
+            <tr id="row-{{id}}">
+                <td class="title-{{id}}">{{ title }}</td>
+                <td class="description-{{id}}">{{ description }}</td>
+                <td class="location-{{id}}">{{ location }}</td>
+                <td class="date-{{id}}">{{ date }}</td>
+                <td>{{ likes }}&nbsp;<button value="{{id}}" class="like-button">Like</button></td>
+                <td>{{ dislikes }}&nbsp;<button value="{{id}}" class="dislike-button">DisLike</button></td>
+                <td><button value="{{id}}" class="edit-button">Edit</button>&nbsp;&nbsp;
+                    <button value="{{id}}" class="delete-button">Delete</button>
+                </td>
+            </tr>
+        {{/events}}
+        </tbody>
+    </table>
+</div>
+<script>
+    $(document).ready(function(){
+        $('#delete_message').hide();
+        $('#event-form-container').hide();
+        $('#event-date').datepicker();
+        $('.like-button').on('click', (event => {$.post(`/event/like/${event.target.value}`, () => {location.reload()})}));
+        $('.dislike-button').on('click', (event => {$.post(`/event/dislike/${event.target.value}`, () => {location.reload()})}));
+        $('.edit-button').on('click', (event => {populateForm(event.target.value); $('#event-form-container').show();}));
+        $(".delete-button").on('click', function(event){
+            deleteMessage(event.target.value);
+        });
+        $('.add-button').on('click', (event => { $('#event-form-container').show();}))
+        $('.form-cancel-button').on('click', (event => {event.preventDefault(); $('#event-form-container').hide();}))
+        $("#cancel").on('click', function(){
+            deleteHide();
+        });
+    });
+    function deleteMessage(id) {
+        $(".delete-question").text(`Are You Sure You Want To Delete this Event: ${getTitle(id)}`);
+        $("#delete_message").slideDown();
+        $('.delete-button-yes').on('click', (event => {$.post(`/event/delete/${id}`, () => {location.reload()})}));
+    }
+    function deleteHide() {
+        $("#delete_message").slideUp();
+    }
+    function populateForm(id) {
+        $('#event-type').val('edit');
+        let evt = {};
+        evt.title = $(`#row-${id} td.title-${id}`).text();
+        evt.description = $(`#row-${id} td.description-${id}`).text();
+        evt.location = $(`#row-${id} td.location-${id}`).text();
+        evt.date = $(`#row-${id} td.date-${id}`).text();
+        $('#form-banner').text('Modify an event');
+        $('#event-id').val(id);
+        $('#event-title').val(evt.title);
+        $('#event-description').val(evt.description);
+        $('#event-location').val(evt.location);
+        $('#event-date').val(evt.date);
+    }
+    function getTitle(id) {
+        return $(`#row-${id} td.title-${id}`).text();
+    }
+</script>

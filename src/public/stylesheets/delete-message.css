@@ -1,0 +1,39 @@
+#delete_message
+{
+    display:none;
+    position:fixed;
+    top:0px;
+    width:100%;
+    height:150px;
+    background-color:#5882FA;
+    text-align:center;
+}
+#delete_message h2
+{
+    color:#0431B4;
+}
+#delete,#cancel
+{
+
+    background:none;
+    width:100px;
+    height:40px;
+    font-size:18px;
+    border-radius:5px;
+    border:2px solid white;
+    margin:10px;
+    color:#CED8F6;
+}
+
+#test_delete
+{
+
+    background:none;
+    width:400px;
+    height:50px;
+    font-size:18px;
+    border-radius:5px;
+    border:2px solid #819FF7;
+    margin:10px;
+    color:#045FB4;
+}
