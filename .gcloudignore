@@ -1,0 +1,10 @@
+# nodejs dependencies folder
+node_modules
+# IDE specific folder
+.idea
+# gitignore file
+.gitignore
+# local git repository
+.git
+# nyc test coverage
+.nyc_output
